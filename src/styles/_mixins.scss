@@ -1,0 +1,9 @@
+// cleanup extra styles for 'a'
+@mixin simple-a {
+  text-decoration: none;
+  outline: none;
+
+  &:active {
+    color: inherit;
+  }
+}

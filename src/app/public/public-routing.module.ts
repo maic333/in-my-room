@@ -1,15 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import * as fromPages from './pages';
+
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './public/public.module#PublicModule'
-  },
+    component: fromPages.LoginComponent
+  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class PublicRoutingModule { }
