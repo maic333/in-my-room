@@ -3,10 +3,14 @@
 
 /* variables */
 $font-roboto: 'Roboto-Font';
+$font-bauhaus: 'Bauhaus-93';
+$font-bookman: 'Bookman-old-style';
 
 /* Media Queries */
 $desktop-min-size: 1300px;
 $mobile-max-size: 1299px;
+$small-mobile-max-size: 500px;
 
 $desktop-devices: "only screen and (min-width: #{$desktop-min-size})";
 $mobile-devices: "only screen and (max-width: #{$mobile-max-size})";
+$small-mobile-devices: "only screen and (max-width: #{$small-mobile-max-size})";

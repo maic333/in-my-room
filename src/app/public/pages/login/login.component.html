@@ -1,15 +1,21 @@
 <div fxLayout="row" fxLayoutAlign="center">
-  <mat-card fxFlex="400px" fxLayout="column">
-    <h1>Login</h1>
+  <div class="login-card" fxLayout="column">
+    <app-logo></app-logo>
 
-    <form [formGroup]="form" (submit)="login(form)">
+    <form
+      [formGroup]="form"
+      (submit)="login(form)"
+      fxLayout="column" fxLayoutGap="10px"
+    >
       <app-form-input
         [control]="form.controls['name']"
-        placeholder="Name"
+        placeholder="Enter your name"
         [required]="true"
       ></app-form-input>
 
-      <button mat-raised-button color="primary">Login</button>
+      <div fxLayout="row">
+        <button id="get-started" mat-raised-button color="primary">Get started!</button>
+      </div>
     </form>
-  </mat-card>
+  </div>
 </div>

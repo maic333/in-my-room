@@ -1,0 +1,41 @@
+@import '../../../../../styles/common.scss';
+
+app-logo {
+  background: linear-gradient(301deg, rgba(43, 43, 43, 0.5970763305322129) 0%, rgba(48, 48, 48, 0.3477766106442577) 42%, rgba(66, 66, 66, 0) 100%);
+  animation: MainBackground 10s ease infinite;
+
+  @keyframes MainBackground {
+    0% {
+      background-color: #0077d3;
+    }
+    25% {
+      background-color: #3dccd3;
+    }
+    50% {
+      background-color: #5a85d3;
+    }
+    75% {
+      background-color: #31d385;
+    }
+    10% {
+      background-color: #0077d3;
+    }
+  }
+
+  svg {
+    display: block;
+
+    .small {
+      font-size: 5px;
+      font-weight: bold;
+      font-family: $font-bookman;
+    }
+
+    .logo {
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 1;
+      font-family: $font-bauhaus;
+    }
+  }
+}
