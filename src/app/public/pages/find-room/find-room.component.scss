@@ -1,0 +1,18 @@
+app-find-room {
+  h1 {
+    font-size: 23px;
+  }
+
+  .or-label {
+    margin: 20px 0 10px 0;
+
+    .bar {
+      height: 2px;
+      background-color: black;
+    }
+
+    span {
+      padding: 5px;
+    }
+  }
+}

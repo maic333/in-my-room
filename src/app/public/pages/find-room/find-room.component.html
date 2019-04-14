@@ -1,0 +1,51 @@
+<div fxLayout="row" fxLayoutAlign="center">
+  <mat-card class="container-card" fxLayout="column">
+    <app-logo></app-logo>
+
+    <div class="find-room-container" fxLayout="column">
+      <div class="join-room">
+        <h1>Join an existing room</h1>
+        <form
+          [formGroup]="joinRoomForm"
+          (submit)="joinRoom(joinRoomForm)"
+          fxLayout="column" fxLayoutGap="10px"
+        >
+          <app-form-input
+            [control]="joinRoomForm.controls['roomId']"
+            placeholder="Enter room id"
+            [required]="true"
+          ></app-form-input>
+
+          <div fxLayout="row">
+            <button mat-raised-button color="primary">Join room</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="or-label" fxLayout="row" fxLayoutAlign="start center">
+        <div fxFlex class="bar"></div>
+        <span>OR</span>
+        <div fxFlex class="bar"></div>
+      </div>
+
+      <div class="create-room">
+        <h1>Create a new room</h1>
+        <form
+          [formGroup]="createRoomForm"
+          (submit)="createRoom(createRoomForm)"
+          fxLayout="column" fxLayoutGap="10px"
+        >
+          <app-form-input
+            [control]="createRoomForm.controls['name']"
+            placeholder="Enter room name"
+            [required]="true"
+          ></app-form-input>
+
+          <div fxLayout="row">
+            <button mat-raised-button color="primary">Create room</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</div>

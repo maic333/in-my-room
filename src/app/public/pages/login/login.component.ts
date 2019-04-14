@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/notification/services/notification.service';
 import { throwError } from 'rxjs';
 import { User } from '../../../core/models/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ export class LoginComponent implements OnInit {
     private authDataService: AuthDataService,
     private formBuilder: FormBuilder,
     private formHelper: FormHelperService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {
   }
 
@@ -63,6 +65,9 @@ export class LoginComponent implements OnInit {
         this.notificationService.showSuccess({
           message: `Welcome, ${data.user.name}!`
         });
+
+        // redirect to find-room page
+        this.router.navigate(['/find-room']);
       });
   }
 }

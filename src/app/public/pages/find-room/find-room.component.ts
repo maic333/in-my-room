@@ -1,23 +1,25 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AuthDataService } from '../../../core/services/data/auth.data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormHelperService } from '../../../core/services/helper/form-helper.service';
 import { catchError } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/notification/services/notification.service';
 import { throwError } from 'rxjs';
+import { RoomDataService } from '../../../core/services/data/room.data.service';
 import { User } from '../../../core/models/user';
+import { Room } from '../../../core/models/room';
 
 @Component({
-  selector: 'app-choose-room',
+  selector: 'app-find-room',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './choose-room.component.html',
-  styleUrls: ['./choose-room.component.scss']
+  templateUrl: './find-room.component.html',
+  styleUrls: ['./find-room.component.scss']
 })
-export class ChooseRoomComponent implements OnInit {
-  form: FormGroup;
+export class FindRoomComponent implements OnInit {
+  joinRoomForm: FormGroup;
+  createRoomForm: FormGroup;
 
   constructor(
-    private authDataService: AuthDataService,
+    private roomDataService: RoomDataService,
     private formBuilder: FormBuilder,
     private formHelper: FormHelperService,
     private notificationService: NotificationService
@@ -29,7 +31,19 @@ export class ChooseRoomComponent implements OnInit {
   }
 
   private initForm() {
-    this.form = this.formBuilder.group(
+    this.joinRoomForm = this.formBuilder.group(
+      {
+        roomId: [
+          null,
+          [
+            Validators.required,
+            Validators.minLength(36),
+            Validators.maxLength(36)
+          ]
+        ]
+      }
+    );
+    this.createRoomForm = this.formBuilder.group(
       {
         name: [
           null,
@@ -43,26 +57,39 @@ export class ChooseRoomComponent implements OnInit {
     );
   }
 
-  login(form: FormGroup) {
+  joinRoom(form: FormGroup) {
     if (!this.formHelper.validateForm(form)) {
       return;
     }
 
     const dirtyFields: any = this.formHelper.getFields(form);
 
-    this.authDataService.login(dirtyFields)
+    // #TODO
+  }
+
+  createRoom(form: FormGroup) {
+    if (!this.formHelper.validateForm(form)) {
+      return;
+    }
+
+    const dirtyFields: any = this.formHelper.getFields(form);
+
+    this.roomDataService.createRoom(dirtyFields)
       .pipe(
         catchError((err) => {
           this.notificationService.showError({
-            message: 'Login failed'
+            message: 'Could not create room'
           });
           return throwError(err);
         })
       )
-      .subscribe((data: {user: User}) => {
+      .subscribe((room: Room) => {
         this.notificationService.showSuccess({
-          message: `Welcome, ${data.user.name}!`
+          message: `Created a new room: ${room.name} (${room.id})`
         });
+
+        // #TODO redirect to room page
+        // this.router.navigate(['/find-room']);
       });
   }
 }
