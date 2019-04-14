@@ -18,7 +18,8 @@
     "forin": false,
     "import-blacklist": [
       true,
-      "rxjs/Rx"
+      "rxjs/Rx",
+      "lodash"
     ],
     "import-spacing": true,
     "indent": [

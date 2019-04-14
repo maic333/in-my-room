@@ -1,0 +1,25 @@
+<div class="notification">
+  <!-- Icon -->
+  <div class="icon {{config.type}}">
+    <span class="xt-icon">{{icon}}</span>
+  </div>
+
+  <!-- Message -->
+  <span class="message">{{config.message}}</span>
+
+  <!-- Actions -->
+  <div *ngIf="config.actions?.length > 0" class="actions">
+    <span
+      *ngFor="let action of config.actions"
+      class="action"
+      (click)="onActionClick(action)"
+    >{{action.label}}</span>
+  </div>
+
+  <!-- Close icon -->
+  <span
+    *ngIf="config.dismissable"
+    class="xt-icon close"
+    (click)="dismiss()"
+  >close</span>
+</div>

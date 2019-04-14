@@ -1,0 +1,87 @@
+@import '../../../../../styles/common';
+
+$color-success: #3F9C36;
+$color-error: #CD0400;
+$color-info: #4C5257;
+$min-height: 44px;
+
+.mat-snack-bar-container {
+  padding: 0;
+  min-height: $min-height;
+
+  .notification {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    background-color: white;
+    border: 1px solid #BBBBBB;
+    font-family: $font-roboto;
+    font-size: 14px;
+    color: #363636;
+
+    .icon {
+      height: 100%;
+      width: $min-height;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 25px;
+      color: white;
+
+      &.success {
+        background-color: $color-success;
+      }
+      &.error {
+        background-color: $color-error;
+      }
+      &.info {
+        background-color: $color-info;
+      }
+    }
+
+    .message {
+      flex: 1 1;
+      padding: 14px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+
+      .action {
+        color: #0088ce;
+        cursor: pointer;
+
+        &:hover {
+          color: #00659c;
+          text-decoration: underline;
+        }
+
+        &:not(:first-child) {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    .close {
+      font-size: 20px;
+      color: #363636;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0 10px;
+
+      &:hover {
+        color: black;
+      }
+    }
+  }
+
+  &.success {
+    background-color: $color-success;
+  }
+
+  &.error {
+    background-color: $color-error;
+  }
+
+}

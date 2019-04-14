@@ -3,7 +3,7 @@ import { AuthDataService } from '../../../core/services/data/auth.data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormHelperService } from '../../../core/services/helper/form-helper.service';
 import { catchError } from 'rxjs/operators';
-import { NotificationService } from '../../../core/services/helper/notification.service';
+import { NotificationService } from '../../../shared/notification/services/notification.service';
 import { throwError } from 'rxjs';
 import { User } from '../../../core/models/user';
 
@@ -53,12 +53,16 @@ export class LoginComponent implements OnInit {
     this.authDataService.login(dirtyFields)
       .pipe(
         catchError((err) => {
-          this.notificationService.showError('Login failed');
+          this.notificationService.showError({
+            message: 'Login failed'
+          });
           return throwError(err);
         })
       )
       .subscribe((data: {user: User}) => {
-        this.notificationService.showSuccess(`Welcome, ${data.user.name}!`);
+        this.notificationService.showSuccess({
+          message: `Welcome, ${data.user.name}!`
+        });
       });
   }
 }

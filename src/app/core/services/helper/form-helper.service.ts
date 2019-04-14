@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import * as _ from 'lodash';
-import { NotificationService } from './notification.service';
+import set = require('lodash/set');
+import isEmpty = require('lodash/isEmpty');
+import forEach = require('lodash/forEach');
+import { NotificationService } from '../../../shared/notification/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,13 +25,13 @@ export class FormHelperService {
       if (formElement instanceof FormGroup) {
         // this is a form group
         const formGroup = formElement as FormGroup;
-        _.forEach(formGroup.controls, (control: any, controlName: string) => {
+        forEach(formGroup.controls, (control: any, controlName: string) => {
           exploreElement(control, [...formElementPath, controlName]);
         });
       } else if (formElement instanceof FormArray) {
         // this is a form array
         const formArray = formElement as FormArray;
-        _.forEach(formArray.controls, (control: any, controlIndex: number) => {
+        forEach(formArray.controls, (control: any, controlIndex: number) => {
           exploreElement(control, [...formElementPath, controlIndex]);
         });
       } else {
@@ -40,15 +42,13 @@ export class FormHelperService {
       }
     }
 
-    _.forEach(form.controls, (control: any, controlName: string) => {
+    forEach(form.controls, (control: any, controlName: string) => {
       exploreElement(control, [controlName]);
     });
   }
 
   /**
    * Get all fields of a form, with their values
-   * @param {FormGroup} form
-   * @returns {any}
    */
   getFields(form: FormGroup, condition: (control: FormControl) => boolean = null): any {
     const fields = {};
@@ -60,13 +60,13 @@ export class FormHelperService {
         const controlPathStr = controlPath.join('.');
 
         // any condition provided?
-        if (_.isFunction(condition)) {
+        if (typeof condition === 'function') {
           // collect data only if condition is validated
           if (condition(control)) {
-            _.set(fields, controlPathStr, control.value);
+            set(fields, controlPathStr, control.value);
           }
         } else {
-          _.set(fields, controlPathStr, control.value);
+          set(fields, controlPathStr, control.value);
         }
       }
     );
@@ -105,7 +105,7 @@ export class FormHelperService {
   mergeDirtyFields(forms: FormGroup[]) {
     let dirtyFields = {};
 
-    _.forEach(forms, (form: FormGroup) => {
+    forEach(forms, (form: FormGroup) => {
       // get the dirty fields of each form
       dirtyFields = {...dirtyFields, ...this.getDirtyFields(form)};
     });
@@ -121,7 +121,7 @@ export class FormHelperService {
   mergeFields(forms: FormGroup[]) {
     let fields = {};
 
-    _.forEach(forms, (form: FormGroup) => {
+    forEach(forms, (form: FormGroup) => {
       // get the fields of each form
       const formFields = this.getFields(form);
 
@@ -139,7 +139,7 @@ export class FormHelperService {
   isFormsSetValid(forms: FormGroup[]) {
     let isValid = true;
 
-    _.forEach(forms, (form: FormGroup) => {
+    forEach(forms, (form: FormGroup) => {
       isValid = isValid && form.valid;
     });
 
@@ -158,15 +158,19 @@ export class FormHelperService {
 
     if (!form.valid) {
       if (notify) {
-        this.notificationService.showError('Some fields are invalid');
+        this.notificationService.showError({
+          message: 'Some fields are invalid'
+        });
       }
 
       return false;
     }
 
-    if (_.isEmpty(dirtyFields)) {
+    if (isEmpty(dirtyFields)) {
       if (notify) {
-        this.notificationService.showSuccess('There are no changes');
+        this.notificationService.showSuccess({
+          message: 'There are no changes'
+        });
       }
 
       return false;

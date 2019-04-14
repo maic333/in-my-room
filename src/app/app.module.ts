@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RequestInterceptor } from './core/services/interceptors/request.interceptor';
 import { ResponseInterceptor } from './core/services/interceptors/response.interceptor';
+import { NotificationModule } from './shared/notification/notification.module';
 
 @NgModule({
   imports: [
@@ -13,9 +14,10 @@ import { ResponseInterceptor } from './core/services/interceptors/response.inter
     NoopAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
+    NotificationModule
   ],
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
