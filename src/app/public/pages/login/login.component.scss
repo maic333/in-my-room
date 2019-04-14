@@ -1,29 +1,7 @@
 @import '../../../../styles/common.scss';
 
 app-login {
-  width: 100%;
-
-  .login-card {
-    width: 400px;
-    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
-    transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  form {
-    padding: 16px;
-    padding-top: 20px;
-    background-color: white;
-
-    button#get-started {
-      background-color: #0077d3;
-    }
-  }
-
-  @media #{$small-mobile-devices} {
-    .login-card {
-      width: 90%;
-    }
+  button#get-started {
+    background-color: #0077d3;
   }
 }

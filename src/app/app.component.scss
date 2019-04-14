@@ -8,6 +8,10 @@ app-root {
     display: flex;
     justify-content: center;
     padding-top: 20vh;
+
+    >*:not(router-outlet) {
+      width: 100%;
+    }
   }
 
 }

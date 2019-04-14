@@ -1,7 +1,10 @@
 @import '../../../../../styles/common.scss';
 
 app-logo {
+  width: 248px;
+  height: 40px;
   background: linear-gradient(301deg, rgba(43, 43, 43, 0.5970763305322129) 0%, rgba(48, 48, 48, 0.3477766106442577) 42%, rgba(66, 66, 66, 0) 100%);
+  background-color: #0077d3;
   animation: MainBackground 10s ease infinite;
 
   @keyframes MainBackground {
@@ -22,20 +25,8 @@ app-logo {
     }
   }
 
-  svg {
-    display: block;
-
-    .small {
-      font-size: 5px;
-      font-weight: bold;
-      font-family: $font-bookman;
-    }
-
-    .logo {
-      font-size: 13px;
-      font-weight: bold;
-      line-height: 1;
-      font-family: $font-bauhaus;
-    }
+  img {
+    margin-left: -1px;
+    margin-top: -1px;
   }
 }
