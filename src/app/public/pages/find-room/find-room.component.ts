@@ -5,8 +5,8 @@ import { catchError } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/notification/services/notification.service';
 import { throwError } from 'rxjs';
 import { RoomDataService } from '../../../core/services/data/room.data.service';
-import { User } from '../../../core/models/user';
 import { Room } from '../../../core/models/room';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-find-room',
@@ -22,7 +22,8 @@ export class FindRoomComponent implements OnInit {
     private roomDataService: RoomDataService,
     private formBuilder: FormBuilder,
     private formHelper: FormHelperService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {
   }
 
@@ -88,8 +89,8 @@ export class FindRoomComponent implements OnInit {
           message: `Created a new room: ${room.name} (${room.id})`
         });
 
-        // #TODO redirect to room page
-        // this.router.navigate(['/find-room']);
+        // redirect to room page
+        this.router.navigate(['/rooms', room.id]);
       });
   }
 }
