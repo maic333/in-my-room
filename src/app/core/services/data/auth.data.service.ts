@@ -11,6 +11,8 @@ import { User } from '../../models/user';
 export class AuthDataService {
   // cache the access token
   accessToken: string;
+  // cache authenticated user data
+  user: User;
 
   constructor(
     private http: HttpClient,
@@ -22,10 +24,15 @@ export class AuthDataService {
     return this.http.post('login', data)
       .pipe(
         tap((resData: {accessToken: string, user: User}) => {
-          // cache userId in memory
+          // cache access token in memory
           this.accessToken = resData.accessToken;
           // ...and in local storage
           this.storageService.set('access_token', resData.accessToken);
+
+          // cache user data in memory
+          this.user = resData.user;
+          // ...and in local storage
+          this.storageService.set('user', resData.user);
         })
       );
   }
@@ -47,6 +54,22 @@ export class AuthDataService {
     if (accessToken) {
       this.accessToken = accessToken;
       return accessToken;
+    }
+
+    return null;
+  }
+
+  getAuthenticatedUser(): User | null {
+    // get from in-memory cache
+    if (this.user) {
+      return this.user;
+    }
+
+    // get from local storage
+    const user = this.storageService.get('user') as User;
+    if (user) {
+      this.user = user;
+      return user;
     }
 
     return null;

@@ -1,1 +1,18 @@
-<h1>{{room?.name}}</h1>
+<div fxLayout="row" fxLayoutAlign="center">
+  <mat-card class="container-card" fxLayout="column">
+    <app-logo></app-logo>
+
+    <div class="room-container" fxLayout="column">
+      <app-room-header [room]="room"></app-room-header>
+
+      <div class="messages" fxLayout="column">
+        <span fxFlexAlign="start">hello</span>
+        <span fxFlexAlign="end">hi</span>
+        <span fxFlexAlign="end">how are you?</span>
+        <span fxFlexAlign="start">stfu</span>
+      </div>
+
+      <app-send-message-form (sendMessage)="sendMessage($event)"></app-send-message-form>
+    </div>
+  </mat-card>
+</div>

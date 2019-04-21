@@ -1,0 +1,22 @@
+<form
+  [formGroup]="form"
+  (submit)="onSendMessage(form)"
+  fxLayout="row"
+>
+
+  <div class="input-element" fxFlex fxLayout="row">
+    <input
+      fxFlex
+      autocorrect="off" spellcheck="false" autocomplete="off"
+      matInput
+      type="text"
+      [formControl]="form.controls['message']"
+      placeholder="New message"
+    />
+  </div>
+
+  <div class="actions">
+    <button type="submit">Send</button>
+  </div>
+
+</form>

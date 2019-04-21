@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormHelperService } from '../../../core/services/helper/form-helper.service';
 import { NotificationService } from '../../../shared/notification/services/notification.service';
 import { RoomDataService } from '../../../core/services/data/room.data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Room } from '../../../core/models/room';
 import { switchMap } from 'rxjs/operators';
+import { User } from '../../../core/models/user';
+import { AuthDataService } from '../../../core/services/data/auth.data.service';
+import { ChatHistoryMessage, ChatMessageType, ServerMessage } from '../../types/chat-service-message';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-room',
@@ -14,22 +16,25 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit {
-  chatForm: FormGroup;
-
+  user: User;
   room: Room;
+
+  private socket: WebSocket;
 
   constructor(
     private roomDataService: RoomDataService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
-    private formHelper: FormHelperService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private authDataService: AuthDataService
   ) {
   }
 
   ngOnInit() {
+    // load authenticated user data
+    this.user = this.authDataService.getAuthenticatedUser();
+
+    // load room data
     this.loadRoom();
-    this.initForm();
   }
 
   private loadRoom() {
@@ -41,26 +46,47 @@ export class RoomComponent implements OnInit {
       )
       .subscribe((room) => {
         this.room = room;
+
+        this.loadChat();
       });
   }
 
-  private initForm() {
-    this.chatForm = this.formBuilder.group(
-      {
-        message: [
-          null
-        ]
-      }
-    );
+  private loadChat() {
+    try {
+      const socket = new WebSocket(
+        `${environment.wsUrl}?token=${this.authDataService.getAccessToken()}&roomId=${this.room.id}`
+      );
+
+      socket.onmessage = (event: MessageEvent) => {
+        try {
+          const message: ServerMessage | ChatHistoryMessage = JSON.parse(event.data);
+
+          if (message.type === ChatMessageType.SERVER_MESSAGE) {
+            // #TODO
+            this.notificationService.showSuccess({
+              message: `new message: ${message.toString()}`
+            });
+          }
+
+          if (message.type === ChatMessageType.CHAT_HISTORY) {
+            // #TODO
+            this.notificationService.showSuccess({
+              message: `got the chat history: ${message.toString()}`
+            });
+          }
+        } catch (e) {
+          // do nothing
+        }
+      };
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  sendMessage(form: FormGroup) {
-    if (!this.formHelper.validateForm(form)) {
-      return;
-    }
-
-    const dirtyFields: any = this.formHelper.getFields(form);
-
-    // #TODO
+  sendMessage(message: string) {
+    // #TODO websockets
+    this.notificationService.showSuccess({
+      message: `${this.user.name}: ${message}`
+    });
   }
 }
