@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { NotificationService } from '../../../shared/notification/services/notification.service';
 import { RoomDataService } from '../../../core/services/data/room.data.service';
 import { ActivatedRoute } from '@angular/router';
@@ -6,8 +6,9 @@ import { Room } from '../../../core/models/room';
 import { switchMap } from 'rxjs/operators';
 import { User } from '../../../core/models/user';
 import { AuthDataService } from '../../../core/services/data/auth.data.service';
-import { ChatHistoryMessage, ChatMessageType, ServerMessage } from '../../types/chat-service-message';
-import { environment } from '../../../../environments/environment';
+import { ChatHistoryMessage, NewParticipantMessage, RoomChatMessage, ServerMessage } from '../../types/chat-service-message';
+import { ChatService } from '../../services/chat.service';
+import { RoomConnection } from '../../types/room-connection';
 
 @Component({
   selector: 'app-room',
@@ -15,16 +16,18 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.scss']
 })
-export class RoomComponent implements OnInit {
+export class RoomComponent implements OnInit, OnDestroy {
   user: User;
   room: Room;
 
-  private socket: WebSocket;
+  private roomConnection: RoomConnection;
+  private chatMessages: RoomChatMessage[] = [];
 
   constructor(
     private roomDataService: RoomDataService,
     private route: ActivatedRoute,
     private notificationService: NotificationService,
+    private chatService: ChatService,
     private authDataService: AuthDataService
   ) {
   }
@@ -35,6 +38,11 @@ export class RoomComponent implements OnInit {
 
     // load room data
     this.loadRoom();
+  }
+
+  ngOnDestroy() {
+    // close connection
+    this.roomConnection.close();
   }
 
   private loadRoom() {
@@ -52,41 +60,40 @@ export class RoomComponent implements OnInit {
   }
 
   private loadChat() {
-    try {
-      const socket = new WebSocket(
-        `${environment.wsUrl}?token=${this.authDataService.getAccessToken()}&roomId=${this.room.id}`
-      );
+    this.roomConnection = this.chatService.connectToRoom(this.room.id);
 
-      socket.onmessage = (event: MessageEvent) => {
-        try {
-          const message: ServerMessage | ChatHistoryMessage = JSON.parse(event.data);
+    // subscribe to the chat history stream
+    this.roomConnection.chatHistory$
+      .subscribe((chatHistory: ChatHistoryMessage) => {
+        // initialize chat messages (history)
+        this.chatMessages = chatHistory.messages;
+      });
 
-          if (message.type === ChatMessageType.SERVER_MESSAGE) {
-            // #TODO
-            this.notificationService.showSuccess({
-              message: `new message: ${message.toString()}`
-            });
-          }
+    // subscribe to the chat messages stream
+    this.roomConnection.message$
+      .subscribe((message: ServerMessage) => {
+        // add newly received message to the chat
+        this.chatMessages.push(message.message);
+        // sort messages by datetime
+        // #TODO think for a better solution!?
+        this.chatMessages.sort((a, b) => {
+          // we've got ISO format, so we can directly compare the strings
+          return (a.datetime < b.datetime) ? -1 : 1;
+        });
+      });
 
-          if (message.type === ChatMessageType.CHAT_HISTORY) {
-            // #TODO
-            this.notificationService.showSuccess({
-              message: `got the chat history: ${message.toString()}`
-            });
-          }
-        } catch (e) {
-          // do nothing
-        }
-      };
-    } catch (e) {
-      console.error(e);
-    }
+    // subscribe to the new participants stream
+    this.roomConnection.newParticipant$
+      .subscribe((message: NewParticipantMessage) => {
+        this.notificationService.showSuccess({
+          message: `${message.user.name} joined the room`
+        });
+      });
   }
 
   sendMessage(message: string) {
-    // #TODO websockets
-    this.notificationService.showSuccess({
-      message: `${this.user.name}: ${message}`
-    });
+    if (this.roomConnection) {
+      this.roomConnection.sendMessage(message);
+    }
   }
 }

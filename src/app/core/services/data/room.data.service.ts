@@ -17,8 +17,8 @@ export class RoomDataService {
     return this.http.post('rooms', data) as Observable<Room>;
   }
 
-  joinRoom(roomId: string): Observable<any> {
-    return this.http.post(`rooms/${roomId}/join`, null);
+  joinRoom(roomId: string): Observable<Room> {
+    return this.http.post(`rooms/${roomId}/join`, null) as Observable<Room>;
   }
 
   getRoom(roomId: string): Observable<Room> {

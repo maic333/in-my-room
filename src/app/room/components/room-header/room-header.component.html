@@ -1,7 +1,18 @@
-<div fxLayout="row">
-  <div class="participants">2 participants</div>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <div class="participants">
+    <span class="summary">{{room.participants.length}} people</span>
+    <div class="list" fxLayout="column">
+      <span
+        *ngFor="let user of room.participants"
+        class="person"
+      >{{user.name}}</span>
+    </div>
+  </div>
 
-  <div class="room-name">{{room?.name}}</div>
+  <div
+    class="room-name"
+    fxFLex
+  >{{room?.name}}</div>
 
   <div class="actions">VIDEO | CALL | OPTS</div>
 </div>

@@ -25,4 +25,5 @@ import { NotificationModule } from './shared/notification/notification.module';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

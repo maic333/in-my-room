@@ -65,7 +65,23 @@ export class FindRoomComponent implements OnInit {
 
     const dirtyFields: any = this.formHelper.getFields(form);
 
-    // #TODO
+    this.roomDataService.joinRoom(dirtyFields.roomId)
+      .pipe(
+        catchError((err) => {
+          this.notificationService.showError({
+            message: 'Could not join room'
+          });
+          return throwError(err);
+        })
+      )
+      .subscribe((room: Room) => {
+        this.notificationService.showSuccess({
+          message: `Joined room: ${room.name} (${room.id})`
+        });
+
+        // redirect to room page
+        this.router.navigate(['/rooms', room.id]);
+      });
   }
 
   createRoom(form: FormGroup) {

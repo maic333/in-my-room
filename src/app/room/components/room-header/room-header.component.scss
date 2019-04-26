@@ -1,0 +1,27 @@
+app-room-header {
+  .room-name {
+    font-weight: bold;
+  }
+
+  .participants {
+    position: relative;
+
+    .list {
+      position: absolute;
+      top: 22px;
+      left: 0;
+      width: auto;
+      padding: 3px;
+      background-color: white;
+      border: 1px solid black;
+      z-index: 999;
+      display: none !important;
+    }
+
+    &:hover {
+      .list {
+        display: flex !important;
+      }
+    }
+  }
+}

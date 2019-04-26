@@ -6,10 +6,25 @@
       <app-room-header [room]="room"></app-room-header>
 
       <div class="messages" fxLayout="column">
-        <span fxFlexAlign="start">hello</span>
-        <span fxFlexAlign="end">hi</span>
-        <span fxFlexAlign="end">how are you?</span>
-        <span fxFlexAlign="start">stfu</span>
+        <ng-container
+          *ngFor="let message of chatMessages"
+        >
+          <!-- Messages from other participants -->
+          <span
+            *ngIf="message.user.id !== user.id"
+            fxFlexAlign="start"
+          >
+            {{message.user.name}} - {{message.datetime}} - {{message.message}}
+          </span>
+
+          <!-- Messages from current user -->
+          <span
+            *ngIf="message.user.id === user.id"
+            fxFlexAlign="end"
+          >
+            {{message.user.name}} - {{message.datetime}} - {{message.message}}
+          </span>
+        </ng-container>
       </div>
 
       <app-send-message-form (sendMessage)="sendMessage($event)"></app-send-message-form>

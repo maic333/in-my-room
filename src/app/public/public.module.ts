@@ -5,15 +5,15 @@ import { CommonSharedModule } from '../shared/common-shared/common-shared.module
 import { FormsCommonModule } from '../shared/forms-common/forms-common.module';
 
 @NgModule({
-    imports: [
-      PublicRoutingModule,
-      CommonSharedModule,
-      FormsCommonModule
-    ],
-    declarations: [
-      ...pages
-    ],
-    entryComponents: []
+  imports: [
+    PublicRoutingModule,
+    CommonSharedModule,
+    FormsCommonModule
+  ],
+  declarations: [
+    ...pages
+  ],
+  entryComponents: []
 })
 export class PublicModule {
 }
