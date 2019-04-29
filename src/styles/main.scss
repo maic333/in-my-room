@@ -16,6 +16,10 @@ body {
   font-family: $font-roboto;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .container-card {
   width: 400px;
   overflow: hidden;

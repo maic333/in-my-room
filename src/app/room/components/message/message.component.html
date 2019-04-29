@@ -1,0 +1,30 @@
+<div
+  fxLayout="column"
+  [fxLayoutAlign]="side === MessageSide.LEFT ? 'start start' : 'start end'"
+  fxLayoutGap="3px"
+  [ngClass]="{'continue': continue}"
+>
+  <span
+    *ngIf="!continue"
+    class="message-date"
+  >{{message.datetime | dateChat}}</span>
+
+  <div
+    class="user-message"
+    [fxLayout]="side === MessageSide.LEFT ? 'row' : 'row-reverse'"
+    fxLayoutAlign="start center"
+    fxLayoutGap="5px"
+  >
+    <span
+      class="user-initials"
+      [style.backgroundColor]="userColor"
+      [matTooltip]="message.user.name"
+      fxLayout="column" fxLayoutAlign="center center"
+    >{{userInitials}}</span>
+
+    <span
+      class="message"
+      [style.backgroundColor]="userColor"
+    >{{message.message}}</span>
+  </div>
+</div>

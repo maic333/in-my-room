@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NotificationService } from '../../../shared/notification/services/notification.service';
 import { RoomDataService } from '../../../core/services/data/room.data.service';
 import { ActivatedRoute } from '@angular/router';
@@ -9,6 +9,7 @@ import { AuthDataService } from '../../../core/services/data/auth.data.service';
 import { ChatHistoryMessage, NewParticipantMessage, RoomChatMessage, ServerMessage } from '../../types/chat-service-message';
 import { ChatService } from '../../services/chat.service';
 import { RoomConnection } from '../../types/room-connection';
+import { MessageSide } from '../../components/message/types/message-side';
 
 @Component({
   selector: 'app-room',
@@ -19,6 +20,11 @@ import { RoomConnection } from '../../types/room-connection';
 export class RoomComponent implements OnInit, OnDestroy {
   user: User;
   room: Room;
+
+  // provide constants to template
+  MessageSide = MessageSide;
+
+  @ViewChild('messages') messagesElem: ElementRef;
 
   private roomConnection: RoomConnection;
   private chatMessages: RoomChatMessage[] = [];
@@ -59,6 +65,14 @@ export class RoomComponent implements OnInit, OnDestroy {
       });
   }
 
+  private scrollToChatBottom() {
+    // wait for bindings to take effect and build the DOM
+    setTimeout(() => {
+      // scroll to the bottom of chat
+      this.messagesElem.nativeElement.scrollTop = this.messagesElem.nativeElement.scrollHeight;
+    });
+  }
+
   private loadChat() {
     this.roomConnection = this.chatService.connectToRoom(this.room.id);
 
@@ -67,6 +81,8 @@ export class RoomComponent implements OnInit, OnDestroy {
       .subscribe((chatHistory: ChatHistoryMessage) => {
         // initialize chat messages (history)
         this.chatMessages = chatHistory.messages;
+
+        this.scrollToChatBottom();
       });
 
     // subscribe to the chat messages stream

@@ -5,26 +5,13 @@
     <div class="room-container" fxLayout="column">
       <app-room-header [room]="room"></app-room-header>
 
-      <div class="messages" fxLayout="column">
-        <ng-container
-          *ngFor="let message of chatMessages"
-        >
-          <!-- Messages from other participants -->
-          <span
-            *ngIf="message.user.id !== user.id"
-            fxFlexAlign="start"
-          >
-            {{message.user.name}} - {{message.datetime}} - {{message.message}}
-          </span>
-
-          <!-- Messages from current user -->
-          <span
-            *ngIf="message.user.id === user.id"
-            fxFlexAlign="end"
-          >
-            {{message.user.name}} - {{message.datetime}} - {{message.message}}
-          </span>
-        </ng-container>
+      <div #messages class="messages" fxLayout="column" fxLayoutGap="3px">
+        <app-message
+          *ngFor="let message of chatMessages; let i = index"
+          [message]="message"
+          [side]="message.user.id === user.id ? MessageSide.RIGHT : MessageSide.LEFT"
+          [continue]="i > 0 && chatMessages[i-1].user.id === chatMessages[i].user.id"
+        ></app-message>
       </div>
 
       <app-send-message-form (sendMessage)="sendMessage($event)"></app-send-message-form>

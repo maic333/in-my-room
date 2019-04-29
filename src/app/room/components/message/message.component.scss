@@ -1,0 +1,40 @@
+$user-color: #5a85d3;
+
+app-message {
+  .message-date {
+    font-size: 15px;
+    color: #6a6a6a;
+    margin-left: 30px;
+    margin-top: 10px;
+  }
+
+  .user-message {
+    width: 100%;
+
+    .user-initials {
+      //background-color: $user-color;
+      color: white;
+      border-radius: 12px;
+      width: 25px;
+      height: 25px;
+      font-size: 11px;
+      cursor: default;
+    }
+
+    .message {
+      max-width: 60%;
+      border-radius: 2px;
+      color: white;
+      padding: 3px 6px;
+    }
+  }
+
+
+  .continue {
+    .user-message {
+      .user-initials {
+        opacity: 0;
+      }
+    }
+  }
+}
