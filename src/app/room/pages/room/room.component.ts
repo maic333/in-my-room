@@ -10,6 +10,8 @@ import { ChatHistoryMessage, NewParticipantMessage, RoomChatMessage, ServerMessa
 import { ChatService } from '../../services/chat.service';
 import { RoomConnection } from '../../types/room-connection';
 import { MessageSide } from '../../components/message/types/message-side';
+import { ChatClient } from '../../../modules/chat-socket/client';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-room',
@@ -42,13 +44,43 @@ export class RoomComponent implements OnInit, OnDestroy {
     // load authenticated user data
     this.user = this.authDataService.getAuthenticatedUser();
 
+    // create the chat client
+    const chatClient = new ChatClient(
+      `${environment.wsUrl}`
+    );
+
+    // connect to the chat server
+    chatClient
+      .connect()
+      .pipe(
+        switchMap(() => {
+          // get the auth token
+          const authToken = this.authDataService.getAccessToken();
+
+          // authenticate in chat
+          return chatClient.authenticate(authToken);
+        })
+      )
+      .subscribe((authRes: boolean) => {
+        if (authRes) {
+          this.notificationService.showSuccess({
+            message: 'Authenticated!'
+          });
+        } else {
+          this.notificationService.showError({
+            message: 'Authentication failed!'
+          });
+        }
+      });
+
+
     // load room data
-    this.loadRoom();
+    // this.loadRoom();
   }
 
   ngOnDestroy() {
     // close connection
-    this.roomConnection.close();
+    // this.roomConnection.close();
   }
 
   private loadRoom() {
