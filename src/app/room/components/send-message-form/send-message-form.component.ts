@@ -25,6 +25,19 @@ export class SendMessageFormComponent implements OnInit {
     this.initForm();
   }
 
+  onSendMessage(form: FormGroup) {
+    if (!this.formHelper.validateForm(form)) {
+      return;
+    }
+
+    const dirtyFields: { message: string } = this.formHelper.getFields(form);
+
+    this.sendMessage.emit(dirtyFields.message);
+
+    // reset form
+    form.reset();
+  }
+
   private initForm() {
     this.form = this.formBuilder.group(
       {
@@ -33,18 +46,5 @@ export class SendMessageFormComponent implements OnInit {
         ]
       }
     );
-  }
-
-  onSendMessage(form: FormGroup) {
-    if (!this.formHelper.validateForm(form)) {
-      return;
-    }
-
-    const dirtyFields: any = this.formHelper.getFields(form);
-
-    this.sendMessage.emit(dirtyFields.message);
-
-    // reset form
-    form.reset();
   }
 }

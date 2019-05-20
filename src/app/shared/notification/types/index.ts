@@ -1,5 +1,6 @@
 export interface NotificationAction {
   label: string;
+  /* tslint:disable-next-line no-any */
   func: (close: () => any) => any;
 }
 

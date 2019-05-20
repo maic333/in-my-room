@@ -30,6 +30,32 @@ export class LoginComponent implements OnInit {
     this.initForm();
   }
 
+  login(form: FormGroup) {
+    if (!this.formHelper.validateForm(form)) {
+      return;
+    }
+
+    const dirtyFields: { name: string } = this.formHelper.getFields(form);
+
+    this.authDataService.login(dirtyFields)
+      .pipe(
+        catchError((err) => {
+          this.notificationService.showError({
+            message: 'Login failed'
+          });
+          return throwError(err);
+        })
+      )
+      .subscribe((data: { user: User }) => {
+        this.notificationService.showSuccess({
+          message: `Welcome, ${data.user.name}!`
+        });
+
+        // redirect to find-room page
+        this.router.navigate(['/find-room']);
+      });
+  }
+
   private initForm() {
     this.form = this.formBuilder.group(
       {
@@ -43,31 +69,5 @@ export class LoginComponent implements OnInit {
         ]
       }
     );
-  }
-
-  login(form: FormGroup) {
-    if (!this.formHelper.validateForm(form)) {
-      return;
-    }
-
-    const dirtyFields: any = this.formHelper.getFields(form);
-
-    this.authDataService.login(dirtyFields)
-      .pipe(
-        catchError((err) => {
-          this.notificationService.showError({
-            message: 'Login failed'
-          });
-          return throwError(err);
-        })
-      )
-      .subscribe((data: {user: User}) => {
-        this.notificationService.showSuccess({
-          message: `Welcome, ${data.user.name}!`
-        });
-
-        // redirect to find-room page
-        this.router.navigate(['/find-room']);
-      });
   }
 }

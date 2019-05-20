@@ -3,13 +3,16 @@ import { NotificationService } from '../../../shared/notification/services/notif
 import { RoomDataService } from '../../../core/services/data/room.data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Room } from '../../../core/models/room';
-import { switchMap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { User } from '../../../core/models/user';
 import { AuthDataService } from '../../../core/services/data/auth.data.service';
 import { ChatHistoryMessage, NewParticipantMessage, RoomChatMessage, ServerMessage } from '../../types/chat-service-message';
 import { ChatService } from '../../services/chat.service';
 import { RoomConnection } from '../../types/room-connection';
 import { MessageSide } from '../../components/message/types/message-side';
+import { environment } from '../../../../environments/environment';
+import { ChatClient } from '../../../modules/chat-client';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-room',
@@ -42,19 +45,54 @@ export class RoomComponent implements OnInit, OnDestroy {
     // load authenticated user data
     this.user = this.authDataService.getAuthenticatedUser();
 
+    // create the chat client
+    const chatClient = new ChatClient({
+      serverUrl: `${environment.wsUrl}`
+    });
+
+    // connect to the chat server
+    chatClient
+      .connect()
+      .pipe(
+        switchMap(() => {
+          // get the auth token
+          const authToken = this.authDataService.getAccessToken();
+
+          // authenticate in chat
+          return chatClient.authenticate(authToken);
+        }),
+        catchError((err) => {
+          this.notificationService.showError({
+            message: 'Authentication failed'
+          });
+          return throwError(err);
+        })
+      )
+      .subscribe(() => {
+        this.notificationService.showSuccess({
+          message: 'Authenticated!'
+        });
+      });
+
     // load room data
-    this.loadRoom();
+    // this.loadRoom();
   }
 
   ngOnDestroy() {
     // close connection
-    this.roomConnection.close();
+    // this.roomConnection.close();
+  }
+
+  sendMessage(message: string) {
+    if (this.roomConnection) {
+      this.roomConnection.sendMessage(message);
+    }
   }
 
   private loadRoom() {
     this.route.params
       .pipe(
-        switchMap((params: {roomId: string}) => {
+        switchMap((params: { roomId: string }) => {
           return this.roomDataService.getRoom(params.roomId);
         })
       )
@@ -105,11 +143,5 @@ export class RoomComponent implements OnInit, OnDestroy {
           message: `${message.user.name} joined the room`
         });
       });
-  }
-
-  sendMessage(message: string) {
-    if (this.roomConnection) {
-      this.roomConnection.sendMessage(message);
-    }
   }
 }

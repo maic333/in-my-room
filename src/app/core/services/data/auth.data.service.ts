@@ -20,7 +20,7 @@ export class AuthDataService {
   ) {
   }
 
-  login(data: {name: string}): Observable<{accessToken: string, user: User}> {
+  login(data: { name: string }): Observable<{accessToken: string, user: User}> {
     return this.http.post('login', data)
       .pipe(
         tap((resData: {accessToken: string, user: User}) => {

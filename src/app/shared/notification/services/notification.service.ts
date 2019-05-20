@@ -14,20 +14,6 @@ export class NotificationService {
   }
 
   /**
-   * Show a notification on page
-   */
-  private showNotification(config: NotificationConfig, duration: number = NotificationDuration.QUICK) {
-    // show snackbar
-    this.snackbar.openFromComponent(NotificationComponent, {
-      data: {
-        config
-      },
-      verticalPosition: 'bottom',
-      duration: duration
-    });
-  }
-
-  /**
    * Show a Success Notification
    */
   showSuccess(config: NotificationConfig, duration: number = NotificationDuration.QUICK) {
@@ -61,5 +47,18 @@ export class NotificationService {
 
     return this.showNotification(config, duration);
   }
-}
 
+  /**
+   * Show a notification on page
+   */
+  private showNotification(config: NotificationConfig, duration: number = NotificationDuration.QUICK) {
+    // show snackbar
+    this.snackbar.openFromComponent(NotificationComponent, {
+      data: {
+        config
+      },
+      verticalPosition: 'bottom',
+      duration: duration
+    });
+  }
+}

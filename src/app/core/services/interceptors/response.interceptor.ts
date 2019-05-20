@@ -14,11 +14,13 @@ export class ResponseInterceptor implements HttpInterceptor {
   ) {
   }
 
+  /* tslint:disable-next-line no-any */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     return next.handle(request)
       .pipe(
-        catchError((error: HttpErrorResponse|any) => {
+        /* tslint:disable-next-line no-any */
+        catchError((error: HttpErrorResponse | any) => {
 
           // for 401 response status, clear the Auth Data
           if (error.status === 401) {
