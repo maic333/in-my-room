@@ -31,39 +31,12 @@ export class FindRoomComponent implements OnInit {
     this.initForm();
   }
 
-  private initForm() {
-    this.joinRoomForm = this.formBuilder.group(
-      {
-        roomId: [
-          null,
-          [
-            Validators.required,
-            Validators.minLength(36),
-            Validators.maxLength(36)
-          ]
-        ]
-      }
-    );
-    this.createRoomForm = this.formBuilder.group(
-      {
-        name: [
-          null,
-          [
-            Validators.required,
-            Validators.minLength(2),
-            Validators.maxLength(36)
-          ]
-        ]
-      }
-    );
-  }
-
   joinRoom(form: FormGroup) {
     if (!this.formHelper.validateForm(form)) {
       return;
     }
 
-    const dirtyFields: any = this.formHelper.getFields(form);
+    const dirtyFields: { roomId: string } = this.formHelper.getFields(form);
 
     this.roomDataService.joinRoom(dirtyFields.roomId)
       .pipe(
@@ -89,7 +62,7 @@ export class FindRoomComponent implements OnInit {
       return;
     }
 
-    const dirtyFields: any = this.formHelper.getFields(form);
+    const dirtyFields: { name: string } = this.formHelper.getFields(form);
 
     this.roomDataService.createRoom(dirtyFields)
       .pipe(
@@ -108,5 +81,32 @@ export class FindRoomComponent implements OnInit {
         // redirect to room page
         this.router.navigate(['/rooms', room.id]);
       });
+  }
+
+  private initForm() {
+    this.joinRoomForm = this.formBuilder.group(
+      {
+        roomId: [
+          null,
+          [
+            Validators.required,
+            Validators.minLength(36),
+            Validators.maxLength(36)
+          ]
+        ]
+      }
+    );
+    this.createRoomForm = this.formBuilder.group(
+      {
+        name: [
+          null,
+          [
+            Validators.required,
+            Validators.minLength(2),
+            Validators.maxLength(36)
+          ]
+        ]
+      }
+    );
   }
 }

@@ -2,12 +2,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 import * as moment from 'moment';
 
 @Pipe({
-    name: 'dateDefault'
+  name: 'dateDefault'
 })
 export class DateDefaultPipe implements PipeTransform {
 
-    transform(value: any): any {
-        return value ? moment(value).format('YYYY-MM-DD hh:mm') : '';
-    }
+  /* tslint:disable-next-line no-any */
+  transform(value: any): any {
+    return value ? moment(value).format('YYYY-MM-DD hh:mm') : '';
+  }
 
 }

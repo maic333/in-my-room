@@ -3,15 +3,16 @@ import { NotificationService } from '../../../shared/notification/services/notif
 import { RoomDataService } from '../../../core/services/data/room.data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Room } from '../../../core/models/room';
-import { switchMap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { User } from '../../../core/models/user';
 import { AuthDataService } from '../../../core/services/data/auth.data.service';
 import { ChatHistoryMessage, NewParticipantMessage, RoomChatMessage, ServerMessage } from '../../types/chat-service-message';
 import { ChatService } from '../../services/chat.service';
 import { RoomConnection } from '../../types/room-connection';
 import { MessageSide } from '../../components/message/types/message-side';
-import { ChatClient } from '../../../modules/chat-socket/client';
 import { environment } from '../../../../environments/environment';
+import { ChatClient } from '../../../modules/chat-client';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-room',
@@ -45,9 +46,9 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.user = this.authDataService.getAuthenticatedUser();
 
     // create the chat client
-    const chatClient = new ChatClient(
-      `${environment.wsUrl}`
-    );
+    const chatClient = new ChatClient({
+      serverUrl: `${environment.wsUrl}`
+    });
 
     // connect to the chat server
     chatClient
@@ -59,20 +60,19 @@ export class RoomComponent implements OnInit, OnDestroy {
 
           // authenticate in chat
           return chatClient.authenticate(authToken);
+        }),
+        catchError((err) => {
+          this.notificationService.showError({
+            message: 'Authentication failed'
+          });
+          return throwError(err);
         })
       )
-      .subscribe((authRes: boolean) => {
-        if (authRes) {
-          this.notificationService.showSuccess({
-            message: 'Authenticated!'
-          });
-        } else {
-          this.notificationService.showError({
-            message: 'Authentication failed!'
-          });
-        }
+      .subscribe(() => {
+        this.notificationService.showSuccess({
+          message: 'Authenticated!'
+        });
       });
-
 
     // load room data
     // this.loadRoom();
@@ -83,10 +83,16 @@ export class RoomComponent implements OnInit, OnDestroy {
     // this.roomConnection.close();
   }
 
+  sendMessage(message: string) {
+    if (this.roomConnection) {
+      this.roomConnection.sendMessage(message);
+    }
+  }
+
   private loadRoom() {
     this.route.params
       .pipe(
-        switchMap((params: {roomId: string}) => {
+        switchMap((params: { roomId: string }) => {
           return this.roomDataService.getRoom(params.roomId);
         })
       )
@@ -137,11 +143,5 @@ export class RoomComponent implements OnInit, OnDestroy {
           message: `${message.user.name} joined the room`
         });
       });
-  }
-
-  sendMessage(message: string) {
-    if (this.roomConnection) {
-      this.roomConnection.sendMessage(message);
-    }
   }
 }

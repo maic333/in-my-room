@@ -13,6 +13,7 @@ export class RequestInterceptor implements HttpInterceptor {
   ) {
   }
 
+  /* tslint:disable-next-line no-any */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // it is recommended to use the 'clone' method when changing the request object
     const clonedRequest = request.clone({
@@ -28,6 +29,8 @@ export class RequestInterceptor implements HttpInterceptor {
   /**
    * GetHTTP headers to be set on given HTTP request
    */
+
+  /* tslint:disable-next-line no-any */
   private getHeaders(request: HttpRequest<any>) {
     const headers = {};
 

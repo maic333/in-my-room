@@ -16,6 +16,7 @@ export class FormInputComponent implements OnInit {
   @Input() readonly: boolean = false;
   @Input() controlContainer: ControlContainer;
 
+  /* tslint:disable-next-line no-any */
   @Output() changed = new EventEmitter<any>();
 
   constructor(
@@ -26,6 +27,16 @@ export class FormInputComponent implements OnInit {
 
   ngOnInit() {
     this.formatValue();
+  }
+
+  /**
+   * Function triggered when the input value is changed
+   */
+  onChange() {
+    this.formatValue();
+
+    // emit the current value
+    return this.changed.emit(this.control.value);
   }
 
   private formatValue() {
@@ -39,15 +50,5 @@ export class FormInputComponent implements OnInit {
         Number(this.control.value)
       );
     }
-  }
-
-  /**
-   * Function triggered when the input value is changed
-   */
-  onChange() {
-    this.formatValue();
-
-    // emit the current value
-    return this.changed.emit(this.control.value);
   }
 }

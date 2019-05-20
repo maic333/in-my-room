@@ -13,7 +13,7 @@ export class RoomDataService {
   ) {
   }
 
-  createRoom(data: {name: string}): Observable<Room> {
+  createRoom(data: { name: string }): Observable<Room> {
     return this.http.post('rooms', data) as Observable<Room>;
   }
 

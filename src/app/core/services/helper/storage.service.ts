@@ -5,6 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root'
 })
 export class StorageService {
+  /* tslint:disable-next-line no-any */
   localStorage: any;
 
   constructor(
@@ -15,6 +16,7 @@ export class StorageService {
     } else {
       // mock localStorage
       this.localStorage = {
+        /* tslint:disable-next-line no-any */
         setItem: (key: string, value: any) => null,
         getItem: (key: string) => null,
         remove: (key: string) => null,
@@ -22,10 +24,12 @@ export class StorageService {
     }
   }
 
+  /* tslint:disable-next-line no-any */
   set(key: string, value: any) {
     this.localStorage.setItem(key, JSON.stringify(value));
   }
 
+  /* tslint:disable-next-line no-any */
   get(key: string): any {
     try {
       return JSON.parse(this.localStorage.getItem(key));

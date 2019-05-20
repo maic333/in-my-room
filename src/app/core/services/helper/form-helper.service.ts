@@ -20,28 +20,30 @@ export class FormHelperService {
    * @param form
    * @param func function to be executed on form controls
    */
+  /* tslint:disable-next-line no-any */
   exploreForm(form: FormGroup, func: (control: FormControl, controlPath: any[]) => void) {
+    /* tslint:disable-next-line no-any */
     function exploreElement(formElement: FormControl | FormGroup | FormArray, formElementPath: any[] = []) {
       if (formElement instanceof FormGroup) {
         // this is a form group
-        const formGroup = formElement as FormGroup;
-        forEach(formGroup.controls, (control: any, controlName: string) => {
+        /* tslint:disable-next-line no-any */
+        forEach(formElement.controls, (control: any, controlName: string) => {
           exploreElement(control, [...formElementPath, controlName]);
         });
       } else if (formElement instanceof FormArray) {
         // this is a form array
-        const formArray = formElement as FormArray;
-        forEach(formArray.controls, (control: any, controlIndex: number) => {
+        /* tslint:disable-next-line no-any */
+        forEach(formElement.controls, (control: any, controlIndex: number) => {
           exploreElement(control, [...formElementPath, controlIndex]);
         });
       } else {
         // this is a form control
-        const formControl = formElement as FormControl;
         // execute function
-        func(formControl, formElementPath);
+        func(formElement, formElementPath);
       }
     }
 
+    /* tslint:disable-next-line no-any */
     forEach(form.controls, (control: any, controlName: string) => {
       exploreElement(control, [controlName]);
     });
@@ -50,11 +52,13 @@ export class FormHelperService {
   /**
    * Get all fields of a form, with their values
    */
+  /* tslint:disable-next-line no-any */
   getFields(form: FormGroup, condition: (control: FormControl) => boolean = null): any {
     const fields = {};
 
     this.exploreForm(
       form,
+      /* tslint:disable-next-line no-any */
       (control: FormControl, controlPath: any[]) => {
         // generate control path string
         const controlPathStr = controlPath.join('.');
@@ -76,10 +80,9 @@ export class FormHelperService {
 
   /**
    * Extract the "dirty" fields of a Form
-   * @param {FormGroup} form
-   * @returns {any}
    */
-  getDirtyFields(form: FormGroup) {
+  /* tslint:disable-next-line no-any */
+  getDirtyFields(form: FormGroup): any {
     return this.getFields(
       form,
       (control: FormControl) => control.dirty
@@ -107,7 +110,7 @@ export class FormHelperService {
 
     forEach(forms, (form: FormGroup) => {
       // get the dirty fields of each form
-      dirtyFields = {...dirtyFields, ...this.getDirtyFields(form)};
+      dirtyFields = { ...dirtyFields, ...this.getDirtyFields(form) };
     });
 
     return dirtyFields;
@@ -115,8 +118,6 @@ export class FormHelperService {
 
   /**
    * Merge all the fields from a set of Forms into a single object
-   * @param {FormGroup[]} forms
-   * @returns {any}
    */
   mergeFields(forms: FormGroup[]) {
     let fields = {};
@@ -125,7 +126,7 @@ export class FormHelperService {
       // get the fields of each form
       const formFields = this.getFields(form);
 
-      fields = {...fields, ...formFields};
+      fields = { ...fields, ...formFields };
     });
 
     return fields;
@@ -154,7 +155,7 @@ export class FormHelperService {
    */
   validateForm(form, notify: boolean = false) {
     // get dirty fields
-    const dirtyFields: any = this.getDirtyFields(form);
+    const dirtyFields = this.getDirtyFields(form);
 
     if (!form.valid) {
       if (notify) {
@@ -179,4 +180,3 @@ export class FormHelperService {
     return true;
   }
 }
-

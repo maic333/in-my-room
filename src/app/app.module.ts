@@ -20,8 +20,8 @@ import { NotificationModule } from './shared/notification/notification.module';
     AppComponent,
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: ResponseInterceptor, multi: true}
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ResponseInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
